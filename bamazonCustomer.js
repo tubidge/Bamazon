@@ -13,7 +13,6 @@ connection.connect(function (err) {
     if (err) throw err;
     console.log(`\nconnected as id ${connection.threadId}`);
     dispInventory();
-    // startPrompt();
 });
 
 function dispInventory() {
@@ -23,11 +22,19 @@ function dispInventory() {
         for (var i = 0; i < res.length; i++) {
             console.log(`Item ID: ${res[i].item_id} | Item Name: ${res[i].product_name} | Item Price: $${res[i].price}`);
         }
+        startPrompt();
     });
-
 };
 
 
-// function startPrompt() {
-
-// };
+function startPrompt() {
+    inquirer.prompt([{
+        name: 'item_id',
+        type: 'input',
+        message: 'Type the ID of the item you want to purchase.'
+    }, {
+        name: 'qty',
+        type: 'input',
+        message: 'How many would you like to purchase?'
+    }])
+};

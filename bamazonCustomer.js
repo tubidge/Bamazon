@@ -21,7 +21,7 @@ connection.connect(function (err) {
 function dispInventory() {
     var query = 'SELECT item_id, product_name, price FROM products';
     connection.query(query, function (err, res) {
-        console.log('Current Inventory: \n-------------------')
+        console.log('\nCurrent Inventory: \n-------------------')
         for (var i = 0; i < res.length; i++) {
             console.log(`Item ID: ${res[i].item_id} | Item Name: ${res[i].product_name} | Item Price: $${res[i].price}`);
         };
@@ -62,7 +62,7 @@ function inventoryCheck() {
             console.log(resp);
             stockQty = resp[0].stock_qty;
             itemPrice = resp[0].price;
-            console.log(`# in stock: ${stockQty} || # requested: ${qtyReq}`);
+            console.log(`\n# in stock: ${stockQty} || # requested: ${qtyReq}`);
             switch (stockQty > qtyReq) {
                 case true:
                     transaction();
@@ -79,7 +79,7 @@ function inventoryCheck() {
 function transaction() {
     var cost = itemPrice * qtyReq;
     var newStock = stockQty - qtyReq;
-    console.log(`Your order total is $${cost}`);
+    console.log(`\nYour order total is $${cost}`);
     connection.query(
         'UPDATE products SET ? WHERE ?',
         [{
@@ -88,6 +88,9 @@ function transaction() {
             {
                 item_id: itemID
             }
-        ], )
+        ]);
+    console.log('Thank you for your order!');
+    dispInventory();
+    startPrompt();
 
 };

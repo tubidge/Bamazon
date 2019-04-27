@@ -14,13 +14,13 @@ CREATE TABLE products (
 INSERT INTO products 
 (product_name, dept_name, price, stock_qty)
 VALUES 
-('3 ft. Cheese Wheel', 'Kitchen/Grocery', 145, 5),
-('Infant Caribou Hide', 'Decor', 500, 9),
-('1/2 Coding Bootcamp Certificate', 'Office', 18, 35),
-('Refurbished Carpet', 'Decor', 27, 128),
-('Ted Nugent Tapestry', 'Decor', 950, 8),
+('3 ft. Cheese Wheel', 'Kitchen/Grocery', 145, 500),
+('Infant Caribou Hide', 'Decor', 500, 900),
+('1/2 Coding Bootcamp Certificate', 'Office', 18, 350),
+('Refurbished Carpet', 'Decor', 27, 1280),
+('Ted Nugent Tapestry', 'Decor', 950, 800),
 ('Possibly Stolen American Express Card', 'Questionables', 5, 12498),
 ("Joel's Netflix Password", 'Entertainment', 7, 100000),
 ('5 Gallon Bucket of Vaseline', 'Beauty', 20, 590),
 ('Breaking Bad S3E6 DVD', 'Entertainment', 3, 821),
-('Twist Tie', 'Kitchen/Grocery', 1, 17);
+('Twist Tie', 'Kitchen/Grocery', 1, 17000);

@@ -12,9 +12,15 @@ var connection = mysql.createConnection({
 
 connection.connect(function (err) {
     if (err) throw err;
-    console.log(`\nconnected as id ${connection.threadId}`);
-    dispInventory();
+    welcome();
 });
+
+// function to display welcome message,
+// then triggers inventory function.
+function welcome() {
+    console.log('\n\n    ~~~  WELCOME TO BAMAZON  ~~~    \n');
+    dispInventory();
+};
 
 // function to display the database inventory on app launch,
 // then triggers prompt function.

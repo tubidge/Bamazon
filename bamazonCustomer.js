@@ -25,6 +25,7 @@ function dispInventory() {
         for (var i = 0; i < res.length; i++) {
             console.log(`Item ID: ${res[i].item_id} | Item Name: ${res[i].product_name} | Item Price: $${res[i].price}`);
         };
+        console.log('\n');
         startPrompt();
     });
 };
@@ -33,8 +34,9 @@ var itemID = undefined;
 var qtyReq = undefined;
 var itemPrice = undefined;
 var stockQty = undefined;
+
 // function to inquire and capture user input.
-// then checks inventory for
+// then triggers inventory function.
 function startPrompt() {
     inquirer.prompt([{
         name: 'item_id',
@@ -45,13 +47,15 @@ function startPrompt() {
         type: 'input',
         message: 'How many would you like to purchase?'
     }]).then(function (resp) {
-        console.log(resp);
         itemID = parseInt(resp.item_id);
         qtyReq = parseInt(resp.qty);
         inventoryCheck();
     });
 };
 
+// function to check order quantity against inventory.
+// if sufficient, prompt confirmation.
+// if not, send user to beginning prompt.
 function inventoryCheck() {
     connection.query(
         'SELECT * FROM products WHERE ?', {
@@ -59,27 +63,54 @@ function inventoryCheck() {
         },
         function (err, resp) {
             if (err) throw err;
-            console.log(resp);
+            productName = resp[0].product_name;
             stockQty = resp[0].stock_qty;
             itemPrice = resp[0].price;
-            console.log(`\n# in stock: ${stockQty} || # requested: ${qtyReq}`);
             switch (stockQty > qtyReq) {
                 case true:
-                    transaction();
+                    confirmOrder();
                     break;
 
                 case false:
-                    console.log(`----- \nSo sorry! We only have ${stockQty} in stock. \n-----`)
+                    console.log(`\n So sorry! We only have ${stockQty} in stock. Please select another item.\n`)
                     startPrompt();
                     break;
             };
         });
 };
 
+// function to have user confirm order total.
+// if yes, trigger transactoin.
+// if no, trigger prompt to buy again.
+function confirmOrder() {
+    console.log(`\n# in stock: ${stockQty} || # requested: ${qtyReq}`);
+    console.log(`\n- - - - Please confirm your purchase - - - - \n
+        Item: ${productName} 
+        Quantity: ${qtyReq}
+        Order Total: $${itemPrice * qtyReq}
+        \n- - - - - - - - - - - - - - - - - - - - - - -`);
+    inquirer.prompt({
+        name: 'confirmOrder',
+        type: 'list',
+        message: 'Proceed?',
+        choices: ['Yes', 'No']
+    }).then(function (resp) {
+        switch (resp.confirmOrder) {
+            case 'Yes':
+                transaction();
+                break;
+            case 'No':
+                console.log('\n Canceling order. \n');
+                buyAgain();
+        }
+    })
+}
+
+// function to display order cost and remove order qty from database.
+// then trigger prompt to buy again.
 function transaction() {
     var cost = itemPrice * qtyReq;
     var newStock = stockQty - qtyReq;
-    console.log(`\nYour order total is $${cost}`);
     connection.query(
         'UPDATE products SET ? WHERE ?',
         [{
@@ -89,8 +120,25 @@ function transaction() {
                 item_id: itemID
             }
         ]);
-    console.log('Thank you for your order!');
-    dispInventory();
-    startPrompt();
+    console.log('\n Thank you for your order! \n');
+    buyAgain();
+};
 
+// function to ask user if they want to buy again.
+function buyAgain() {
+    inquirer.prompt({
+        name: 'buyAgain',
+        type: 'list',
+        message: 'Would you like to place another order?',
+        choices: ['Yes', 'No']
+    }).then(function (resp) {
+        switch (resp.buyAgain === 'Yes') {
+            case true:
+                dispInventory();
+                break;
+            case false:
+                console.log('\n Goodbye!');
+                connection.end();
+        };
+    });
 };

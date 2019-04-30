@@ -15,4 +15,5 @@ Bamazon is a simple command line interface app that allows users to place orders
 5. If YES, you will be started from the beginning. If NO, you will exit the application.
 
 [Animated Demonstration]
+
 <img src="/images/BamazonDemo.gif">
